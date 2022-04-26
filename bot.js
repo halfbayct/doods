@@ -116,9 +116,7 @@
         console.log(`Triggering sending doods on quests`);
         availableButton.click();
         await sleep(500);
-        const firstMission = document
-          .querySelector(".mission-send button")
-          .click();
+        document.querySelector(".mission-send button").click();
         await sleep(500);
         await sendDoods();
       }
@@ -129,7 +127,13 @@
       console.log(e);
       lock = false;
     }
+
+    return tick;
   }
   // set up ticks
-  setInterval(tick, 5000);
+  setInterval(tick(), 5000);
 })();
+
+/*
+javascript:(() => { var s = document.createElement('script');s.setAttribute('src','https://halfbayct.github.io/pd-bot/bot.js');document.head.appendChild(s); })();
+*/
