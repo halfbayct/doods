@@ -1,3 +1,14 @@
+/*
+Steps to use: 
+1) Login to game manually
+2) Create a bookmarklet with this url:
+   javascript:(() => { var s = document.createElement('script');s.setAttribute('src','https://halfbayct.github.io/pd-bot/bot.js');document.head.appendChild(s); })();
+
+3) Be on the quests page
+4) click bookmarklet
+5) profit mad star coin
+*/
+
 (function bot() {
   // Lock to prevent loop from executing if its taking a long time
   let lock = false;
@@ -132,7 +143,3 @@
   tick();
   setInterval(tick, 5000);
 })();
-
-/*
-javascript:(() => { var s = document.createElement('script');s.setAttribute('src','https://halfbayct.github.io/pd-bot/bot.js');document.head.appendChild(s); })();
-*/
