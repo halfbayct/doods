@@ -127,11 +127,10 @@
       console.log(e);
       lock = false;
     }
-
-    return tick;
   }
   // set up ticks
-  setInterval(tick(), 5000);
+  tick();
+  setInterval(tick, 5000);
 })();
 
 /*
