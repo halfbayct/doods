@@ -140,6 +140,9 @@ Steps to use:
     }
   }
   // set up ticks
-  tick();
-  setInterval(tick, 5000);
+  tick()
+   .then(async () => {
+      await sleep(15 * 1000); 
+      setInterval(tick, 60 * 1000);
+   });
 })();
