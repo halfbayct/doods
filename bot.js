@@ -127,7 +127,7 @@ Steps to use:
         console.log(`Triggering sending doods on quests`);
         availableButton.click();
         await sleep(500);
-        document.querySelector(".mission-send button").click();
+        document.querySelectorAll(".mission-send button")[5].click();
         await sleep(500);
         await sendDoods();
       }
