@@ -103,7 +103,7 @@ Steps to use:
       const totalCompleted = parseInt(
         completedButton.textContent
           .toLowerCase()
-          .replace("completed ", "")
+          .replace(/\D/g, "")
           .trim()
       );
       console.log(`Completed: ${totalCompleted}`);
@@ -111,7 +111,7 @@ Steps to use:
       const totalInProgress = parseInt(
         inProgressButton.textContent
           .toLowerCase()
-          .replace("in progress ", "")
+          .replace(/\D/g, "")
           .trim()
       );
       console.log(`In Progress: ${totalInProgress}`);
