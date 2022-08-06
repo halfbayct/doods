@@ -94,7 +94,7 @@ Steps to use:
       availableButton.click();
       await sleep(250);
       document.querySelectorAll(".mission-send button")[5].click();
-      await sleep(500);
+      await sleep(1000);
       document.querySelector(".send-mission-go-back").click();
       await sleep(250);
       
@@ -132,7 +132,7 @@ Steps to use:
         availableButton.click();
         await sleep(500);
         document.querySelectorAll(".mission-send button")[5].click();
-        await sleep(500);
+        await sleep(1000);
         await sendDoods();
       } 
       
