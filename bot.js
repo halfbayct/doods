@@ -136,7 +136,9 @@ Steps to use:
         await sendDoods();
       } 
       
-      inProgressButton.click();
+      document.querySelector(
+        ".mission-nav-button.current"
+      )?.click();
 
       lock = false;
       console.log(`======== END Tick @ ${tickDate} ========`);
