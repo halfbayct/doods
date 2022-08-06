@@ -28,11 +28,10 @@ Steps to use:
     "position:absolute",
     "top:0",
     "left:0",
-    "width:100%",
-    "height:2em",
     "background:#47b1c0",
     "color:#FFF",
-    "padding:0.25em",
+    "padding:0.5em",
+    `font-family: "PressStart2P"`,
   ];
   header.style = styles.join(";");
   header.innerHTML = `BONK in SPACE enabled. Running with <b>${totalDoods}</b> characters`;
