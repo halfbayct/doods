@@ -80,6 +80,20 @@ Steps to use:
       const tickDate = new Date().toISOString();
       console.log(`======== Tick @ ${tickDate} ========`);
 
+      let totalDoods = parseInt(
+        document.querySelector(".balance-amount").textContent
+      );
+
+      // work around weird dood count behavior
+      if (totalDoods === 0) {
+        document.querySelector(".mission-nav-button.available").click();
+        await sleep(250);
+        document.querySelectorAll(".mission-send button")[5].click();
+        await sleep(1000);
+        document.querySelector(".send-mission-go-back").click();
+        await sleep(250);
+      }
+
       const availableButton = document.querySelector(
         ".mission-nav-button.available"
       );
@@ -90,33 +104,19 @@ Steps to use:
         ".mission-nav-button.current"
       );
 
-      
-      availableButton.click();
-      await sleep(250);
-      document.querySelectorAll(".mission-send button")[5].click();
-      await sleep(1000);
-      document.querySelector(".send-mission-go-back").click();
-      await sleep(250);
-      
-
-      const totalDoods = parseInt(
+      totalDoods = parseInt(
         document.querySelector(".balance-amount").textContent
       );
+
       console.log(`Total doods: ${totalDoods}`);
 
       const totalCompleted = parseInt(
-        completedButton.textContent
-          .toLowerCase()
-          .replace(/\D/g, "")
-          .trim()
+        completedButton.textContent.toLowerCase().replace(/\D/g, "").trim()
       );
       console.log(`Completed: ${totalCompleted}`);
 
       const totalInProgress = parseInt(
-        inProgressButton.textContent
-          .toLowerCase()
-          .replace(/\D/g, "")
-          .trim()
+        inProgressButton.textContent.toLowerCase().replace(/\D/g, "").trim()
       );
       console.log(`In Progress: ${totalInProgress}`);
 
@@ -134,11 +134,9 @@ Steps to use:
         document.querySelectorAll(".mission-send button")[5].click();
         await sleep(1000);
         await sendDoods();
-      } 
-      
-      document.querySelector(
-        ".mission-nav-button.current"
-      )?.click();
+      }
+
+      document.querySelector(".mission-nav-button.current")?.click();
 
       lock = false;
       console.log(`======== END Tick @ ${tickDate} ========`);
@@ -148,9 +146,8 @@ Steps to use:
     }
   }
   // set up ticks
-  tick()
-   .then(async () => {
-      await sleep(15 * 1000); 
-      setInterval(tick, 60 * 1000);
-   });
+  tick().then(async () => {
+    await sleep(15 * 1000);
+    setInterval(tick, 60 * 1000);
+  });
 })();
