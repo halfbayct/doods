@@ -90,10 +90,13 @@ Steps to use:
         ".mission-nav-button.current"
       );
 
+      
       availableButton.click();
       await sleep(250);
-      inProgressButton.click();
-      await sleep(250);
+      document.querySelectorAll(".mission-send button")[5].click();
+      await sleep(500);
+      document.querySelector(".send-mission-go-back").click();
+      
 
       const totalDoods = parseInt(
         document.querySelector(".balance-amount").textContent
@@ -130,7 +133,9 @@ Steps to use:
         document.querySelectorAll(".mission-send button")[5].click();
         await sleep(500);
         await sendDoods();
-      }
+      } 
+      
+      inProgressButton.click();
 
       lock = false;
       console.log(`======== END Tick @ ${tickDate} ========`);
