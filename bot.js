@@ -96,6 +96,7 @@ Steps to use:
       document.querySelectorAll(".mission-send button")[5].click();
       await sleep(500);
       document.querySelector(".send-mission-go-back").click();
+      await sleep(250);
       
 
       const totalDoods = parseInt(
