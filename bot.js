@@ -13,6 +13,31 @@ Steps to use:
   // Lock to prevent loop from executing if its taking a long time
   let lock = false;
 
+  // only need to load count once
+  const totalDoods = parseInt(
+    document.querySelector(".balance-amount").textContent
+  );
+
+  if (totalDoods === NaN || totalDoods === 0) {
+    alert("No characters found, please reload");
+    return;
+  }
+
+  const header = document.createElement("div");
+  const styles = [
+    "position:absolute",
+    "top:0",
+    "left:0",
+    "width:100%",
+    "height:2em",
+    "background:#47b1c0",
+    "color:#FFF",
+    "padding:0.25em",
+  ];
+  header.style = styles.join(";");
+  header.innerHTML = `BONK in SPACE enabled. Running with <b>${totalDoods}</b> characters`;
+  document.body.appendChild(header);
+
   async function sleep(ms) {
     return new Promise((resolve) => {
       setTimeout(resolve, ms);
@@ -80,20 +105,6 @@ Steps to use:
       const tickDate = new Date().toISOString();
       console.log(`======== Tick @ ${tickDate} ========`);
 
-      let totalDoods = parseInt(
-        document.querySelector(".balance-amount").textContent
-      );
-
-      // work around weird dood count behavior
-      if (totalDoods === 0) {
-        document.querySelector(".mission-nav-button.available").click();
-        await sleep(250);
-        document.querySelectorAll(".mission-send button")[5].click();
-        await sleep(1000);
-        document.querySelector(".send-mission-go-back").click();
-        await sleep(250);
-      }
-
       const availableButton = document.querySelector(
         ".mission-nav-button.available"
       );
@@ -104,11 +115,12 @@ Steps to use:
         ".mission-nav-button.current"
       );
 
-      totalDoods = parseInt(
-        document.querySelector(".balance-amount").textContent
-      );
-
       console.log(`Total doods: ${totalDoods}`);
+
+      availableButton.click();
+      await sleep(250);
+      inProgressButton.click();
+      await sleep(250);
 
       const totalCompleted = parseInt(
         completedButton.textContent.toLowerCase().replace(/\D/g, "").trim()
