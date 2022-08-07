@@ -20,8 +20,6 @@ Steps to use:
   let tickDate = new Date();
   let expires = new Date(new Date() + 12 * 60 * 60 * 1000);
 
- 
-
   const header = document.createElement("div");
   const styles = [
     "position:absolute",
@@ -33,13 +31,9 @@ Steps to use:
     `font-family: "PressStart2P"`,
   ];
   header.style = styles.join(";");
-  header.innerHTML = `<p>BONK in SPACE enabled. Running with <b>${totalDoods}</b> characters</p>`;
-  document.body.appendChild(header);
-
   const timerElement = document.createElement("p");
-  header.append(timerElement);
   const lastTickElement = document.createElement("p");
-  header.append(lastTickElement);
+  
 
   function addXMLRequestCallback(callback) {
     var oldSend, i;
@@ -91,6 +85,11 @@ Steps to use:
     totalDoods = parseInt(
       document.querySelector(".balance-amount").textContent
     );
+
+    header.innerHTML = `<p>BONK in SPACE enabled. Running with <b>${totalDoods}</b> characters</p>`;
+    header.append(timerElement);
+    header.append(lastTickElement);
+    document.body.appendChild(header);
 
     if (totalDoods === NaN || totalDoods === 0) {
       alert("No characters found, please reload");
