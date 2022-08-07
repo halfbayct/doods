@@ -14,17 +14,13 @@ Steps to use:
   let lock = false;
 
   // only need to load count once
-  const totalDoods = parseInt(
-    document.querySelector(".balance-amount").textContent
-  );
+  let totalDoods = 0;
 
   const startTime = new Date();
   let tickDate = new Date();
+  let expires = new Date(new Date() + 12 * 60 * 60 * 1000);
 
-  if (totalDoods === NaN || totalDoods === 0) {
-    alert("No characters found, please reload");
-    return;
-  }
+ 
 
   const header = document.createElement("div");
   const styles = [
@@ -45,10 +41,76 @@ Steps to use:
   const lastTickElement = document.createElement("p");
   header.append(lastTickElement);
 
+  function addXMLRequestCallback(callback) {
+    var oldSend, i;
+    if (XMLHttpRequest.callbacks) {
+      XMLHttpRequest.callbacks.push(callback);
+    } else {
+      XMLHttpRequest.callbacks = [callback];
+      oldSend = XMLHttpRequest.prototype.send;
+      XMLHttpRequest.prototype.send = function () {
+        for (i = 0; i < XMLHttpRequest.callbacks.length; i++) {
+          XMLHttpRequest.callbacks[i](this);
+        }
+        oldSend.apply(this, arguments);
+      };
+    }
+  }
+
   async function sleep(ms) {
     return new Promise((resolve) => {
       setTimeout(resolve, ms);
     });
+  }
+
+  function parseJwt(token) {
+    var base64Url = token.split(".")[1];
+    var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    var jsonPayload = decodeURIComponent(
+      window
+        .atob(base64)
+        .split("")
+        .map(function (c) {
+          return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join("")
+    );
+
+    return JSON.parse(jsonPayload);
+  }
+
+  async function bootstrap() {
+    let captured = null;
+    addXMLRequestCallback(function (xhr) {
+      captured = captured || xhr;
+    });
+
+    document.querySelector(".input-button")?.click();
+    await sleep(2500);
+
+    totalDoods = parseInt(
+      document.querySelector(".balance-amount").textContent
+    );
+
+    if (totalDoods === NaN || totalDoods === 0) {
+      alert("No characters found, please reload");
+      return;
+    }
+
+    if (!captured) {
+      return;
+    }
+
+    const token = (captured.getResponseHeader('authorization') || "").split(' ')[1];
+
+    if (!token) {
+      return;
+    }
+
+    const payload = parseJwt(token);
+    console.log(payload);
+    expires = new Date(payload.exp * 1000);
+    console.log(expires);
   }
 
   async function sendDoods() {
@@ -169,7 +231,7 @@ Steps to use:
     var diff = date1.getTime() - date2.getTime();
 
     var days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    diff -=  days * (1000 * 60 * 60 * 24);
+    diff -= days * (1000 * 60 * 60 * 24);
 
     var hours = Math.floor(diff / (1000 * 60 * 60));
     diff -= hours * (1000 * 60 * 60);
@@ -177,30 +239,34 @@ Steps to use:
     var mins = Math.floor(diff / (1000 * 60));
     diff -= mins * (1000 * 60);
 
-    var seconds = Math.floor(diff / (1000));
-    diff -= seconds * (1000);
+    var seconds = Math.floor(diff / 1000);
+    diff -= seconds * 1000;
     let result = "";
-    result += days > 0 ? `${days} days `: "";
-    result += hours > 0 ? `${hours} hours `: "";
-    result += mins > 0 ? `${mins} mins `: "";
-    result += seconds > 0 ? `${seconds} sec `: "";
+    result += days > 0 ? `${days} days ` : "";
+    result += hours > 0 ? `${hours} hours ` : "";
+    result += mins > 0 ? `${mins} mins ` : "";
+    result += seconds > 0 ? `${seconds} sec ` : "";
     return result;
   }
 
   function updateRuntime() {
-    const runtime = timespanText(new Date(), startTime);
-    let html = `Runtime: ${runtime}`;
-    timerElement.innerHTML= html;
+    const now = new Date();
+    const runtime = now.getTime() > expires.getTime() ? 'EXPIRED' : timespanText(expires, now);
 
-    const tickText = timespanText(new Date(), tickDate);
+    let html = `Token Expires: ${runtime}`;
+    timerElement.innerHTML = html;
+
+    const tickText = timespanText(now, tickDate);
     let tickHtml = `Last Tick: ${tickText}`;
     lastTickElement.innerHTML = tickHtml;
   }
 
   setInterval(updateRuntime, 1000);
   // set up ticks
-  tick().then(async () => {
-    await sleep(15 * 1000);
-    setInterval(tick, 60 * 1000);
-  });
+  bootstrap()
+    .then(() => tick())
+    .then(async () => {
+      await sleep(15 * 1000);
+      setInterval(tick, 60 * 1000);
+    });
 })();
