@@ -18,6 +18,9 @@ Steps to use:
     document.querySelector(".balance-amount").textContent
   );
 
+  const startTime = new Date();
+  let tickDate = new Date();
+
   if (totalDoods === NaN || totalDoods === 0) {
     alert("No characters found, please reload");
     return;
@@ -34,8 +37,13 @@ Steps to use:
     `font-family: "PressStart2P"`,
   ];
   header.style = styles.join(";");
-  header.innerHTML = `BONK in SPACE enabled. Running with <b>${totalDoods}</b> characters`;
+  header.innerHTML = `<p>BONK in SPACE enabled. Running with <b>${totalDoods}</b> characters</p>`;
   document.body.appendChild(header);
+
+  const timerElement = document.createElement("p");
+  header.append(timerElement);
+  const lastTickElement = document.createElement("p");
+  header.append(lastTickElement);
 
   async function sleep(ms) {
     return new Promise((resolve) => {
@@ -101,8 +109,8 @@ Steps to use:
     lock = true;
 
     try {
-      const tickDate = new Date().toISOString();
-      console.log(`======== Tick @ ${tickDate} ========`);
+      tickDate = new Date();
+      console.log(`======== Tick @ ${tickDate.toISOString()} ========`);
 
       const availableButton = document.querySelector(
         ".mission-nav-button.available"
@@ -150,12 +158,46 @@ Steps to use:
       document.querySelector(".mission-nav-button.current")?.click();
 
       lock = false;
-      console.log(`======== END Tick @ ${tickDate} ========`);
+      console.log(`======== END Tick @ ${tickDate.toISOString()} ========`);
     } catch (e) {
       console.log(e);
       lock = false;
     }
   }
+
+  function timespanText(date1, date2) {
+    var diff = date1.getTime() - date2.getTime();
+
+    var days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    diff -=  days * (1000 * 60 * 60 * 24);
+
+    var hours = Math.floor(diff / (1000 * 60 * 60));
+    diff -= hours * (1000 * 60 * 60);
+
+    var mins = Math.floor(diff / (1000 * 60));
+    diff -= mins * (1000 * 60);
+
+    var seconds = Math.floor(diff / (1000));
+    diff -= seconds * (1000);
+    let result = "";
+    result += days > 0 ? `${days} days `: "";
+    result += hours > 0 ? `${hours} hours `: "";
+    result += mins > 0 ? `${mins} mins `: "";
+    result += seconds > 0 ? `${seconds} sec `: "";
+    return result;
+  }
+
+  function updateRuntime() {
+    const runtime = timespanText(new Date(), startTime);
+    let html = `Runtime: ${runtime}`;
+    timerElement.innerHTML= html;
+
+    const tickText = timespanText(new Date(), tickDate);
+    let tickHtml = `Last Tick: ${tickText}`;
+    lastTickElement.innerHTML = tickHtml;
+  }
+
+  setInterval(updateRuntime, 1000);
   // set up ticks
   tick().then(async () => {
     await sleep(15 * 1000);
