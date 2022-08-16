@@ -107,41 +107,25 @@ Steps to use:
     }
 
     const payload = parseJwt(token);
-    console.log(payload);
     expires = new Date(payload.exp * 1000);
-    console.log(expires);
   }
 
   async function sendDoods() {
     try {
-      while (true) {
-        const autoEquip = document.querySelector(
-          "div.item-autoequip-box button"
-        );
-        autoEquip.click();
-        await sleep(250);
+      // clear any toast messages
+      document.querySelector('.Toastify__toast')?.click();
 
-        const charselectBtn = document.querySelector(
-          ".send-mission-right-char-select img"
-        );
-        charselectBtn.click();
-        await sleep(500);
+      const sendAllButton = document.querySelector(
+        ".send-mission-button"
+      );
+      sendAllButton.click();
+      await sleep(500);
 
-        const dood = document.querySelector(".item-left.selectable");
-        if (!dood) {
-          console.log("No more doods found");
-          document.querySelector(".MuiBackdrop-root")?.click();
-          document.querySelector(".send-mission-title button")?.click();
-          break;
-        }
-
-        dood.click();
-        await sleep(100);
-
-        document.querySelector(".bit-button img").click();
-        console.log("Send 1 dood on a mission");
-        await sleep(1500);
+      while (!document.querySelector('.Toastify__toast')) {
+        
+        await sleep(200);
       }
+      document.querySelector('.send-mission-go-back').click();
     } catch (e) {
       console.log(e);
       document.querySelector(".MuiBackdrop-root")?.click();
